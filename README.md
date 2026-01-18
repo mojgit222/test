@@ -512,7 +512,7 @@ ORDER BY [Vrijednost prodaje] DESC;
 
 
 1.
-DDL, DML i DCL izrazi služe za različite vrste rada sa bazom podataka. DDL se koristi za kreiranje i izmjenu strukture baze podataka, kao što su tabele, pogledi i indeksi. DML se koristi za rad sa podacima unutar tabela, odnosno za unos, izmjenu, brisanje i čitanje podataka. DCL se koristi za upravljanje pravima pristupa bazi podataka, odnosno za dodjeljivanje i oduzimanje privilegija korisnicima.
+DDL, DML i DCL izrazi služe za različite vrste rada sa bazom podataka. DDL se koristi za definisanje i izmjenu strukture baze podataka, kao što su tabele, pogledi i indeksi. DML se koristi za unos, izmjenu, brisanje i čitanje podataka unutar tabela. DCL se koristi za upravljanje pravima pristupa bazi podataka, odnosno za dodjeljivanje i oduzimanje privilegija korisnicima.
 
 2.
 U bazi podataka postoje različiti tipovi korisnika, kao što su administrator baze, programeri i krajnji korisnici. Administrator baze ima najveće ovlasti i odgovoran je za sigurnost, performanse i održavanje baze. Programeri koriste bazu kroz aplikacije i imaju ovlasti za rad nad podacima koje aplikacija zahtijeva. Krajnji korisnici koriste bazu indirektno, najčešće kroz forme i izvještaje, bez direktnog pristupa strukturi baze.
@@ -530,19 +530,19 @@ Procedure se koriste kako bi se često korištene SQL operacije smjestile na jed
 Podupiti su SQL upiti koji se nalaze unutar drugih upita i služe za dobijanje privremenih rezultata koji se koriste u glavnom upitu. Oni omogućavaju složenije upite i poređenja, kao što su provjere prosjeka, maksimuma ili postojanja određenih podataka.
 
 7.
-Razlika između ACID i BASE pristupa je u načinu upravljanja transakcijama. ACID pristup garantuje potpunu tačnost, konzistentnost i pouzdanost transakcija, dok BASE pristup daje prednost dostupnosti i brzini, prihvatajući privremenu nekonzistentnost podataka.
+Razlika između ACID i BASE pristupa je u načinu upravljanja transakcijama. ACID pristup garantuje tačnost, konzistentnost i pouzdanost transakcija, dok BASE pristup daje prednost dostupnosti i brzini, uz prihvatanje privremene nekonzistentnosti podataka.
 
 8.
 Kursori su mehanizam koji omogućava obradu podataka red po red. Koriste se u situacijama kada se nad svakim redom mora izvršiti posebna logika koju nije moguće jednostavno realizovati standardnim SQL upitima.
 
 9.
-SQL upit nije ispravan jer koristi agregatnu funkciju zajedno sa kolonom koja nije obuhvaćena GROUP BY klauzulom, što dovodi do sintaksne greške.
+SQL upit nije ispravan jer koristi agregatnu funkciju zajedno sa kolonom koja nije obuhvaćena GROUP BY klauzulom, što dovodi do greške u izvršavanju upita.
 
 10.
-Rezultat ovog SQL izraza je lista kupaca kod kojih je ukupan iznos računa veći od 10000, pri čemu je prikazana njihova šifra i prosječan iznos računa. Rezultati su sortirani po ukupnom iznosu računa u opadajućem redoslijedu, što omogućava menadžeru da vidi najvrijednije kupce.
+Rezultat ovog SQL izraza je lista kupaca za koje je ukupan iznos računa veći od 10000, pri čemu je prikazana njihova šifra i prosječan iznos računa. Rezultati su sortirani po ukupnom iznosu računa u opadajućem redoslijedu, što omogućava menadžeru da vidi najvrijednije kupce.
 
 11.
-SQL upit nije ispravan jer u SELECT dijelu koristi kolone koje ne postoje u tabeli navednoj u FROM klauzuli, niti su tabele međusobno povezane.
+SQL upit nije ispravan jer u SELECT dijelu koristi kolone koje ne postoje u tabeli navedenoj u FROM klauzuli, niti su tabele međusobno povezane.
 
 12.
 Rezultat ovog SQL izraza su svi odjeli koji nemaju nijednog zaposlenog. Upit provjerava za svaki odjel da li ne postoji nijedan zapis u tabeli zaposlenih koji je povezan s tim odjelom.
