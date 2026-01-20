@@ -1,20 +1,74 @@
-# SQL rješenje – Baze podataka II
+/* ============================================================
+   BAZE PODATAKA II – KOMPLETNO RJEŠENJE
+   Baza: AdventureWorks2017
+   Autor: (upiši ime / indeks)
+   ============================================================ */
 
-```sql
--- =========================================================
--- 2. Baza: AdventureWorks2017
--- Maksimalno: 60 bodova
--- =========================================================
 
+/* ============================================================
+   1. TEORIJA
+   ============================================================ */
+
+-- 1.
+-- DDL, DML i DCL izrazi služe za različite vrste rada sa bazom podataka.
+-- DDL se koristi za kreiranje i izmjenu strukture baze podataka
+-- (CREATE, ALTER, DROP – tabele, pogledi, indeksi).
+-- DML se koristi za rad sa podacima (SELECT, INSERT, UPDATE, DELETE).
+-- DCL se koristi za upravljanje pravima pristupa (GRANT, REVOKE).
+
+-- 2.
+-- U bazi postoje različiti tipovi korisnika: administratori, programeri i krajnji korisnici.
+-- Administrator baze upravlja sigurnošću, performansama i održavanjem.
+-- Programeri pristupaju bazi kroz aplikacije.
+-- Krajnji korisnici koriste bazu indirektno, najčešće kroz forme i izvještaje.
+
+-- 3.
+-- Ekskluzivno zaključavanje (exclusive lock) onemogućava drugim transakcijama
+-- čitanje i izmjenu podataka dok je lock aktivan, čime se osigurava konzistentnost.
+
+-- 4.
+-- WHERE filtrira redove prije grupisanja,
+-- HAVING filtrira rezultate nakon grupisanja i agregacije.
+
+-- 5.
+-- Procedure omogućavaju ponovno korištenje SQL logike,
+-- poboljšavaju sigurnost i performanse jer se izvršavaju na strani baze.
+
+-- 6.
+-- Podupiti su SQL upiti unutar drugih upita
+-- i koriste se za kompleksna poređenja (AVG, MAX, EXISTS...).
+
+-- 7.
+-- ACID garantuje pouzdanost transakcija,
+-- BASE daje prednost dostupnosti i brzini uz privremenu nekonzistentnost.
+
+-- 8.
+-- Kursori omogućavaju obradu podataka red po red,
+-- koriste se kada set-based rješenja nisu dovoljna.
+
+-- 9.
+-- SQL upit nije ispravan ako koristi agregatnu funkciju
+-- bez GROUP BY klauzule za ostale kolone.
+
+-- 10.
+-- Rezultat SQL izraza je lista kupaca sa ukupnim iznosom većim od 10000,
+-- sortirana opadajuće po ukupnom iznosu.
+
+-- 11.
+-- SQL upit nije ispravan ako koristi kolone koje ne postoje
+-- u tabelama navedenim u FROM klauzuli.
+
+-- 12.
+-- Rezultat su svi odjeli koji nemaju nijednog zaposlenog
+-- (NOT EXISTS / LEFT JOIN IS NULL).
+
+
+
+/* ============================================================
+   2. ADVENTUREWORKS2017 – SQL UPITI (60 BODOVA)
+   ============================================================ */
 
 -- 2a (10 bodova)
--- Za svaku kategoriju prikaži koliko joj pripada proizvoda
--- čija je maloprodajna cijena (List Price) manja od prosječne
--- maloprodajne cijene kategorije proizvoda kojoj proizvod pripada.
---
--- Zaglavlje rješenja:
--- Kategorija, Broj proizvoda ispod prosjeka
-
 SELECT
     pc.Name AS Kategorija,
     COUNT(*) AS [Broj proizvoda ispod prosjeka]
@@ -34,17 +88,7 @@ WHERE p.ListPrice <
 GROUP BY pc.Name;
 
 
-
 -- 2b (10 bodova)
--- Prikazati narudžbe kreirane u četvrtom kvartalu 2013. ili
--- prvom kvartalu 2014. godine, imaju najmanje 4 stavke,
--- ukupna vrijednost narudžbe veća od 1500 (TotalDue),
--- isporučene u roku od 7 dana, plaćene kreditnom karticom
--- i sadrže barem jednu stavku sa popustom.
---
--- Zaglavlje rješenja:
--- ID narudžbe, Datum narudžbe
-
 SELECT
     soh.SalesOrderID AS [ID narudžbe],
     soh.OrderDate AS [Datum narudžbe]
@@ -64,16 +108,7 @@ HAVING COUNT(sod.SalesOrderDetailID) >= 4
    AND SUM(CASE WHEN sod.UnitPriceDiscount > 0 THEN 1 ELSE 0 END) >= 1;
 
 
-
 -- 2c (10 bodova)
--- Prikazati ukupnu vrijednost prodaje u 2013. godini za
--- svakog od prodavača pojedinačno.
--- U obzir uzeti samo one prodavače koji su imali barem
--- jednu narudžbu veću od 5000 i ukupnu prodaju veću od 150000.
---
--- Zaglavlje rješenja:
--- ID prodavača, Ime i prezime prodavača, Ukupna prodaja
-
 SELECT
     sp.BusinessEntityID AS [ID prodavača],
     pp.FirstName + ' ' + pp.LastName AS [Ime i prezime prodavača],
@@ -89,14 +124,7 @@ HAVING SUM(soh.TotalDue) > 150000
    AND MAX(soh.TotalDue) > 5000;
 
 
-
 -- 2d (5 bodova)
--- Prikazati proizvode koji su barem jednom prodani sa
--- popustom, a ne nalaze se više u ponudi.
---
--- Zaglavlje rješenja:
--- Naziv proizvoda
-
 SELECT DISTINCT
     p.Name AS [Naziv proizvoda]
 FROM AdventureWorks2017.Production.Product p
@@ -106,14 +134,7 @@ WHERE sod.UnitPriceDiscount > 0
   AND p.SellEndDate IS NOT NULL;
 
 
-
 -- 2e (5 bodova)
--- Prikazati sve Adamse (kupce s prezimenom Adams)
--- koji su potrošili više od 1000 KM.
---
--- Zaglavlje rješenja:
--- ID kupca, Ime i prezime
-
 SELECT
     c.CustomerID AS [ID kupca],
     pp.FirstName + ' ' + pp.LastName AS [Ime i prezime]
@@ -128,14 +149,7 @@ HAVING SUM(soh.TotalDue) > 1000
 ORDER BY SUM(soh.TotalDue) DESC;
 
 
-
 -- 2f (10 bodova)
--- Prikazati proizvode koji su prodani u količini većoj
--- od prosječne prodaje podkategorije kojoj pripadaju.
---
--- Zaglavlje rješenja:
--- Naziv proizvoda, Prodana količina
-
 SELECT
     p.Name AS [Naziv proizvoda],
     SUM(sod.OrderQty) AS [Prodana količina]
@@ -159,14 +173,7 @@ HAVING SUM(sod.OrderQty) >
 ORDER BY [Prodana količina] DESC;
 
 
-
 -- 2g (10 bodova)
--- Prikazati odjevne predmete prodane više od 20 puta,
--- a koji nisu među 10 najprodavanijih u prvih 5 godina.
---
--- Zaglavlje rješenja:
--- Naziv proizvoda
-
 SELECT DISTINCT
     p.Name AS [Naziv proizvoda]
 FROM AdventureWorks2017.Production.Product p
@@ -188,8 +195,8 @@ HAVING COUNT(DISTINCT sod.SalesOrderID) > 20
        JOIN AdventureWorks2017.Sales.SalesOrderHeader soh2
            ON sod2.SalesOrderID = soh2.SalesOrderID
        WHERE soh2.OrderDate < DATEADD(YEAR, 5,
-           (SELECT MIN(OrderDate)
-            FROM AdventureWorks2017.Sales.SalesOrderHeader))
+             (SELECT MIN(OrderDate)
+              FROM AdventureWorks2017.Sales.SalesOrderHeader))
        GROUP BY sod2.ProductID
        ORDER BY SUM(sod2.OrderQty) DESC
    )
@@ -197,15 +204,18 @@ ORDER BY p.Name;
 
 
 
--- =========================================================
--- 3. Kreiranje baze i objekata
--- =========================================================
+/* ============================================================
+   3. KREIRANJE BAZE I OBJEKATA (20 BODOVA)
+   ============================================================ */
 
 CREATE DATABASE IB200200;
 GO
 
 USE IB200200;
 GO
+
+
+-- 3.1 Tabele
 
 CREATE TABLE Proizvodi
 (
@@ -227,63 +237,104 @@ CREATE TABLE StavkeNarudzbe
     Cijena MONEY NOT NULL,
     Popust MONEY NOT NULL,
     OpisSpecijalnePonude NVARCHAR(255),
-
-    CONSTRAINT PK_StavkeNarudzbe
-        PRIMARY KEY (NarudzbaID, StavkaNarudzbeID),
-
+    CONSTRAINT PK_StavkeNarudzbe PRIMARY KEY (NarudzbaID, StavkaNarudzbeID),
     CONSTRAINT FK_StavkeNarudzbe_Proizvodi
-        FOREIGN KEY (ProizvodID)
-        REFERENCES Proizvodi(ProizvodID)
+        FOREIGN KEY (ProizvodID) REFERENCES Proizvodi(ProizvodID)
 );
 
 
+-- 3.2 Kopiranje podataka
 
--- =========================================================
--- Teorijska pitanja
--- =========================================================
+SET IDENTITY_INSERT Proizvodi ON;
 
--- 1.
--- DDL, DML i DCL izrazi služe za različite vrste rada sa bazom
--- podataka. DDL se koristi za kreiranje i izmjenu strukture
--- baze podataka, DML za rad sa podacima, a DCL za upravljanje
--- pravima pristupa.
+INSERT INTO Proizvodi
+SELECT
+    p.ProductID,
+    p.Name,
+    p.Color,
+    p.Size,
+    p.SellStartDate,
+    ISNULL(p.SellEndDate, GETDATE()),
+    ISNULL(SUM(pi.Quantity), 0)
+FROM AdventureWorks2017.Production.Product p
+LEFT JOIN AdventureWorks2017.Production.ProductInventory pi
+    ON p.ProductID = pi.ProductID
+WHERE p.SellStartDate IS NOT NULL
+GROUP BY
+    p.ProductID, p.Name, p.Color, p.Size, p.SellStartDate, p.SellEndDate;
 
--- 2.
--- U bazi podataka postoje administratori, programeri i
--- krajnji korisnici, sa različitim nivoima ovlasti.
+SET IDENTITY_INSERT Proizvodi OFF;
 
--- 3.
--- Ekskluzivno zaključavanje onemogućava drugim transakcijama
--- pristup podacima dok se zaključavanje ne oslobodi.
 
--- 4.
--- WHERE filtrira redove prije grupisanja, a HAVING filtrira
--- rezultate nakon agregacije.
+SET IDENTITY_INSERT StavkeNarudzbe ON;
 
--- 5.
--- Procedure omogućavaju ponovnu upotrebu koda, veću sigurnost
--- i bolje performanse.
+INSERT INTO StavkeNarudzbe
+SELECT
+    sod.SalesOrderID,
+    sod.SalesOrderDetailID,
+    sod.ProductID,
+    sod.OrderQty,
+    sod.UnitPrice,
+    sod.UnitPriceDiscount,
+    so.Description
+FROM AdventureWorks2017.Sales.SalesOrderDetail sod
+JOIN AdventureWorks2017.Sales.SpecialOffer so
+    ON sod.SpecialOfferID = so.SpecialOfferID
+JOIN Proizvodi p
+    ON sod.ProductID = p.ProizvodID;
 
--- 6.
--- Podupiti su upiti unutar drugih upita koji omogućavaju
--- složenija poređenja i izračune.
+SET IDENTITY_INSERT StavkeNarudzbe OFF;
 
--- 7.
--- ACID garantuje konzistentnost i pouzdanost, dok BASE daje
--- prednost dostupnosti i brzini.
 
--- 8.
--- Kursori omogućavaju obradu podataka red po red.
+-- Procedura
+CREATE OR ALTER PROCEDURE sp_Prodaja_insertUpdate
+(
+    @NarudzbaID INT,
+    @ProizvodID INT,
+    @Kolicina SMALLINT,
+    @Cijena MONEY,
+    @Popust MONEY,
+    @OpisSpecijalnePonude NVARCHAR(255) = NULL
+)
+AS
+BEGIN
+    INSERT INTO StavkeNarudzbe
+    VALUES (@NarudzbaID, DEFAULT, @ProizvodID, @Kolicina, @Cijena, @Popust, @OpisSpecijalnePonude);
 
--- 9.
--- Greška nastaje kada se agregat koristi bez GROUP BY.
+    UPDATE Proizvodi
+    SET UkupnaKolicinaNaSkladistu = UkupnaKolicinaNaSkladistu - @Kolicina
+    WHERE ProizvodID = @ProizvodID;
+END;
 
--- 10.
--- Rezultat prikazuje najvrijednije kupce prema ukupnom iznosu.
 
--- 11.
--- Greška je korištenje kolona koje ne postoje ili nisu povezane.
+-- Funkcija
+CREATE OR ALTER FUNCTION ProvjeriDostupnostProizvoda
+(
+    @ProizvodID INT,
+    @Kolicina INT
+)
+RETURNS NVARCHAR(2)
+AS
+BEGIN
+    IF EXISTS (
+        SELECT 1 FROM Proizvodi
+        WHERE ProizvodID = @ProizvodID
+          AND UkupnaKolicinaNaSkladistu >= @Kolicina
+    )
+        RETURN 'Da';
+    RETURN 'Ne';
+END;
 
--- 12.
--- Rezultat su odjeli bez zaposlenih.
-```
+
+-- View
+CREATE OR ALTER VIEW v_StatistikaProdaje
+AS
+SELECT
+    p.Naziv AS Proizvod,
+    SUM(sn.Cijena * sn.Kolicina) AS [Vrijednost prodaje],
+    SUM(sn.Kolicina) AS [Količina prodaje]
+FROM Proizvodi p
+JOIN StavkeNarudzbe sn ON p.ProizvodID = sn.ProizvodID
+GROUP BY p.Naziv
+HAVING SUM(sn.Kolicina) > 50
+   AND SUM(sn.Cijena * sn.Kolicina) > 1000;
