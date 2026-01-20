@@ -1,8 +1,10 @@
 # SQL rješenje – Baze podataka II
 
 ```sql
+-- =========================================================
 -- 2. Baza: AdventureWorks2017
 -- Maksimalno: 60 bodova
+-- =========================================================
 
 
 -- 2a (10 bodova)
@@ -65,9 +67,9 @@ HAVING COUNT(sod.SalesOrderDetailID) >= 4
 
 -- 2c (10 bodova)
 -- Prikazati ukupnu vrijednost prodaje u 2013. godini za
--- svakog od prodavača pojedinačno. U obzir uzeti samo one
--- prodavače koji su imali barem jednu narudžbu veću od 5000
--- i one čija je ukupna prodaja veća od 150000.
+-- svakog od prodavača pojedinačno.
+-- U obzir uzeti samo one prodavače koji su imali barem
+-- jednu narudžbu veću od 5000 i ukupnu prodaju veću od 150000.
 --
 -- Zaglavlje rješenja:
 -- ID prodavača, Ime i prezime prodavača, Ukupna prodaja
@@ -106,9 +108,8 @@ WHERE sod.UnitPriceDiscount > 0
 
 
 -- 2e (5 bodova)
--- Prikazati sve Adamse (kupce s prezimenom Adams) koji su
--- potrošili više od 1000 KM na sve kreirane narudžbe.
--- Rezultate sortirati po utrošku u opadajućem redoslijedu.
+-- Prikazati sve Adamse (kupce s prezimenom Adams)
+-- koji su potrošili više od 1000 KM.
 --
 -- Zaglavlje rješenja:
 -- ID kupca, Ime i prezime
@@ -129,9 +130,8 @@ ORDER BY SUM(soh.TotalDue) DESC;
 
 
 -- 2f (10 bodova)
--- Prikazati proizvode koji su prodani u količini većoj od
--- prosječne prodaje podkategorije kojoj pripadaju.
--- Rezultate sortirati prema ukupnoj količini u opadajućem redoslijedu.
+-- Prikazati proizvode koji su prodani u količini većoj
+-- od prosječne prodaje podkategorije kojoj pripadaju.
 --
 -- Zaglavlje rješenja:
 -- Naziv proizvoda, Prodana količina
@@ -161,10 +161,8 @@ ORDER BY [Prodana količina] DESC;
 
 
 -- 2g (10 bodova)
--- Prikazati odjevne predmete prodane više od 20 puta
--- (nalaze se na više od 20 narudžbi), a nisu na listi
--- 10 najprodavanijih proizvoda u prvih pet godina prodaje.
--- Sortirati po nazivu proizvoda.
+-- Prikazati odjevne predmete prodane više od 20 puta,
+-- a koji nisu među 10 najprodavanijih u prvih 5 godina.
 --
 -- Zaglavlje rješenja:
 -- Naziv proizvoda
@@ -190,10 +188,102 @@ HAVING COUNT(DISTINCT sod.SalesOrderID) > 20
        JOIN AdventureWorks2017.Sales.SalesOrderHeader soh2
            ON sod2.SalesOrderID = soh2.SalesOrderID
        WHERE soh2.OrderDate < DATEADD(YEAR, 5,
-             (SELECT MIN(OrderDate)
-              FROM AdventureWorks2017.Sales.SalesOrderHeader))
+           (SELECT MIN(OrderDate)
+            FROM AdventureWorks2017.Sales.SalesOrderHeader))
        GROUP BY sod2.ProductID
        ORDER BY SUM(sod2.OrderQty) DESC
    )
 ORDER BY p.Name;
+
+
+
+-- =========================================================
+-- 3. Kreiranje baze i objekata
+-- =========================================================
+
+CREATE DATABASE IB200200;
+GO
+
+USE IB200200;
+GO
+
+CREATE TABLE Proizvodi
+(
+    ProizvodID INT IDENTITY(1,1) PRIMARY KEY,
+    Naziv NVARCHAR(50) NOT NULL,
+    Boja NVARCHAR(15),
+    Velicina NVARCHAR(5),
+    DatumPocetkaProdaje DATETIME NOT NULL,
+    DatumZavrsetkaProdaje DATETIME NOT NULL,
+    UkupnaKolicinaNaSkladistu INT
+);
+
+CREATE TABLE StavkeNarudzbe
+(
+    NarudzbaID INT NOT NULL,
+    StavkaNarudzbeID INT IDENTITY(1,1) NOT NULL,
+    ProizvodID INT NOT NULL,
+    Kolicina SMALLINT NOT NULL,
+    Cijena MONEY NOT NULL,
+    Popust MONEY NOT NULL,
+    OpisSpecijalnePonude NVARCHAR(255),
+
+    CONSTRAINT PK_StavkeNarudzbe
+        PRIMARY KEY (NarudzbaID, StavkaNarudzbeID),
+
+    CONSTRAINT FK_StavkeNarudzbe_Proizvodi
+        FOREIGN KEY (ProizvodID)
+        REFERENCES Proizvodi(ProizvodID)
+);
+
+
+
+-- =========================================================
+-- Teorijska pitanja
+-- =========================================================
+
+-- 1.
+-- DDL, DML i DCL izrazi služe za različite vrste rada sa bazom
+-- podataka. DDL se koristi za kreiranje i izmjenu strukture
+-- baze podataka, DML za rad sa podacima, a DCL za upravljanje
+-- pravima pristupa.
+
+-- 2.
+-- U bazi podataka postoje administratori, programeri i
+-- krajnji korisnici, sa različitim nivoima ovlasti.
+
+-- 3.
+-- Ekskluzivno zaključavanje onemogućava drugim transakcijama
+-- pristup podacima dok se zaključavanje ne oslobodi.
+
+-- 4.
+-- WHERE filtrira redove prije grupisanja, a HAVING filtrira
+-- rezultate nakon agregacije.
+
+-- 5.
+-- Procedure omogućavaju ponovnu upotrebu koda, veću sigurnost
+-- i bolje performanse.
+
+-- 6.
+-- Podupiti su upiti unutar drugih upita koji omogućavaju
+-- složenija poređenja i izračune.
+
+-- 7.
+-- ACID garantuje konzistentnost i pouzdanost, dok BASE daje
+-- prednost dostupnosti i brzini.
+
+-- 8.
+-- Kursori omogućavaju obradu podataka red po red.
+
+-- 9.
+-- Greška nastaje kada se agregat koristi bez GROUP BY.
+
+-- 10.
+-- Rezultat prikazuje najvrijednije kupce prema ukupnom iznosu.
+
+-- 11.
+-- Greška je korištenje kolona koje ne postoje ili nisu povezane.
+
+-- 12.
+-- Rezultat su odjeli bez zaposlenih.
 ```
